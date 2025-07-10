@@ -7,9 +7,9 @@ class TestPaceZoneCalculatorShould:
     @pytest.mark.parametrize(
         "two_km_time, precision, expected_exception",
         [
-            (-1, 1, ValueError),
-            (1, -1, ValueError),
-            ("invalid", 1, TypeError),  # type: ignore
+            ("-6:40.0", 1, ValueError),
+            ("6:40.0", -1, ValueError),
+            (123, 1, TypeError),  # type: ignore
             (400, "invalid", TypeError),  # type: ignore
         ],
     )
@@ -20,12 +20,12 @@ class TestPaceZoneCalculatorShould:
     @pytest.mark.parametrize(
         "two_km_time,zone,expected_lower_bound, precision",
         [
-            (415, "UT2", 128.1, 1),
-            (400, "UT1", 116.28, 2),
-            (450, "AT", 123.626, 3),
-            (415, "TR", 108.1, 1),
-            (415, "AC", 103.7, 1),
-            (415, "AP", 103.7, 1),
+            ("6:55.0", "UT2", "02:08.1", 1),
+            ("6:40.0", "UT1", "01:56.28", 2),
+            ("7:00.0", "AT", "01:55.385", 3),
+            ("6:55.0", "TR", "01:48.1", 1),
+            ("6:55.0", "AC", "01:43.7", 1),
+            ("6:55.0", "AP", "01:43.7", 1),
         ],
     )
     def test_calculate_lower_bound_time_per_500m(
@@ -39,7 +39,7 @@ class TestPaceZoneCalculatorShould:
         assert lower_bound == expected_lower_bound
 
     def test_reject_invalid_arguments_for_calculate_lower_bound_time_per_500m(self):
-        calculator = PaceZoneCalculator(400, 1)
+        calculator = PaceZoneCalculator("6:40.0", 1)
         with pytest.raises(TypeError):
             calculator.calculate_lower_bound_time_per_500m(123, "config/pace_zones.json") # type: ignore
         with pytest.raises(TypeError):
@@ -56,12 +56,13 @@ class TestPaceZoneCalculatorShould:
     @pytest.mark.parametrize(
         "two_km_time,zone,expected_upper_bound, precision",
         [
-            (415, "UT2", 128.1, 1),
-            (400, "UT1", 116.28, 2),
-            (450, "AT", 123.626, 3),
-            (415, "TR", 108.1, 1),
-            (415, "AC", 103.7, 1),
-            (415, "AP", 103.7, 1),
+            ("6:55.0", "UT3", "02:09.7", 1),
+            ("6:55.0", "UT2", "02:02.1", 1),
+            ("6:40.0", "UT1", "01:51.11", 2),
+            ("7:00.0", "AT", "01:50.526", 3),
+            ("6:55.0", "TR", "01:43.7", 1),
+            ("6:55.0", "AC", "No upper pace bound for zone AC", 1),
+            ("6:55.0", "AP", "No upper pace bound for zone AP", 1),
         ],
     )
     def test_calculate_upper_bound_time_per_500m(
@@ -75,7 +76,7 @@ class TestPaceZoneCalculatorShould:
         assert upper_bound == expected_upper_bound
 
     def test_reject_invalid_arguments_for_calculate_upper_bound_time_per_500m(self):
-        calculator = PaceZoneCalculator(400, 1)
+        calculator = PaceZoneCalculator("6:40.0", 1)
         with pytest.raises(TypeError):
             calculator.calculate_upper_bound_time_per_500m(123, "config/pace_zones.json") # type: ignore
         with pytest.raises(TypeError):
