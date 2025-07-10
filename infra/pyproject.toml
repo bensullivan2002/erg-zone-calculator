@@ -1,0 +1,16 @@
+[project]
+name = "infra"
+version = "0.1.0"
+requires-python = ">=3.8"
+dependencies = [
+    "aws-cdk-lib>=2.183.0",
+    "constructs>=10.4.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
+
+[tool.uv]
+managed = true
