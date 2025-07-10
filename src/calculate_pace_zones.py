@@ -8,7 +8,7 @@ class PaceZoneCalculator:
             raise TypeError("Invalid two_km_time format - must be a string")
         if not isinstance(precision, int):
             raise TypeError("Invalid precision format - must be an integer")
-        parsed_two_km_time = parse_time_str_to_seconds(two_km_time)
+        parsed_two_km_time = _parse_time_str_to_seconds(two_km_time)
         if parsed_two_km_time <= 0:
             raise ValueError("Invalid two_km_time - must be greater than 0")
         if precision <= 0:
@@ -32,7 +32,7 @@ class PaceZoneCalculator:
                 lower_bound_time_per_500m = 500 / (
                     (2000 / self.two_km_time) * lower_bound_coefficient
                 )
-                return format_seconds_to_time_str(round(lower_bound_time_per_500m, self.precision), self.precision)
+                return _format_seconds_to_time_str(round(lower_bound_time_per_500m, self.precision), self.precision)
         except FileNotFoundError as e:
             print(f"Config file not found at {config_file_path}")
             raise e
@@ -62,7 +62,7 @@ class PaceZoneCalculator:
                 upper_bound_time_per_500m = 500 / (
                     (2000 / self.two_km_time) * upper_bound_coefficient
                 )
-                return format_seconds_to_time_str(round(upper_bound_time_per_500m, self.precision), self.precision)
+                return _format_seconds_to_time_str(round(upper_bound_time_per_500m, self.precision), self.precision)
         except FileNotFoundError as e:
             print(f"Config file not found at {config_file_path}")
             raise e
@@ -77,11 +77,11 @@ class PaceZoneCalculator:
             raise e
         pass
 
-def parse_time_str_to_seconds(time_str: str) -> float:
+def _parse_time_str_to_seconds(time_str: str) -> float:
     minutes, seconds = time_str.split(":")
     return int(minutes) * 60 + float(seconds)
 
-def format_seconds_to_time_str(seconds: float, precision: int) -> str:
+def _format_seconds_to_time_str(seconds: float, precision: int) -> str:
     minutes = int(seconds // 60)
     sec = seconds % 60
     sec_format = f"04.{precision}f"

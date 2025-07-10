@@ -1,0 +1,30 @@
+{
+  "UT3": {
+    "lower_bound": null,
+    "upper_bound": 0.59
+  },
+  "UT2": {
+    "lower_bound": 0.60,
+    "upper_bound": 0.67
+  },
+  "UT1": {
+    "lower_bound": 0.68,
+    "upper_bound": 0.75
+  },
+  "AT": {
+    "lower_bound": 0.76,
+    "upper_bound": 0.85
+  },
+  "TR": {
+    "lower_bound": 0.86,
+    "upper_bound": 1.0
+  },
+  "AC": {
+    "lower_bound": 1.0,
+    "upper_bound": null
+  },
+  "AP": {
+    "lower_bound": 1.0,
+    "upper_bound": null
+  }
+}
