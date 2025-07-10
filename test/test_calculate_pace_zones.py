@@ -24,14 +24,14 @@ class TestPaceZoneCalculatorShould:
         )
         assert lower_bound == expected_lower_bound
 
-    def test_reject_calculation_for_negative_times(self):
-        with pytest.raises(ValueError):
-            PaceZoneCalculator(-1, 1)
-
-    def test_reject_calculation_for_invalid_two_km_time_format(self):
-        with pytest.raises(TypeError):
-            PaceZoneCalculator("invalid", 1) # type: ignore
-    
-    def test_reject_calculation_for_invalid_precision_format(self):
-        with pytest.raises(TypeError):
-            PaceZoneCalculator(400, "invalid") # type: ignore
+    @pytest.mark.parametrize(
+        "two_km_time, precision, expected_exception",
+        [
+            (-1, 1, ValueError),
+            ("invalid", 1, TypeError),  # type: ignore
+            (400, "invalid", TypeError),  # type: ignore
+        ],
+    )
+    def test_reject_calculation_for_invalid_inputs(self, two_km_time, precision, expected_exception):
+        with pytest.raises(expected_exception):
+            PaceZoneCalculator(two_km_time, precision)
