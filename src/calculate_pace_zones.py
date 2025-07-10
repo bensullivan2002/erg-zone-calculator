@@ -4,20 +4,24 @@ from pathlib import Path
 
 class PaceZoneCalculator:
     def __init__(self, two_km_time: float | int, precision: int) -> None:
-        if two_km_time <= 0:
-            raise ValueError("Invalid two_km_time - must be greater than 0")
-        if precision <= 0:
-            raise ValueError("Invalid precision - must be greater than 0")
         if not isinstance(two_km_time, (float, int)):
             raise TypeError("Invalid two_km_time format - must be a number")
         if not isinstance(precision, int):
             raise TypeError("Invalid precision format - must be an integer")
+        if two_km_time <= 0:
+            raise ValueError("Invalid two_km_time - must be greater than 0")
+        if precision <= 0:
+            raise ValueError("Invalid precision - must be greater than 0")
         self.two_km_time = two_km_time
         self.precision = precision
 
     def calculate_lower_bound_time_per_500m(
         self, zone: str, config_file_path: str
     ) -> float:
+        if not isinstance(zone, str):
+            raise TypeError("Invalid zone format - must be a string")
+        if not isinstance(config_file_path, str):
+            raise TypeError("Invalid config_file_path format - must be a string")
         try:
             with open(Path(config_file_path), "r") as f:
                 config = json.load(f)

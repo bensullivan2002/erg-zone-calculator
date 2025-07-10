@@ -27,3 +27,7 @@ class TestPaceZoneCalculatorShould:
     def test_reject_calculation_for_negative_times(self):
         with pytest.raises(ValueError):
             PaceZoneCalculator(-1, 1)
+
+    def test_reject_calculation_for_invalid_two_km_time_format(self):
+        with pytest.raises(TypeError):
+            PaceZoneCalculator("invalid", 1)
