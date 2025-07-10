@@ -30,4 +30,8 @@ class TestPaceZoneCalculatorShould:
 
     def test_reject_calculation_for_invalid_two_km_time_format(self):
         with pytest.raises(TypeError):
-            PaceZoneCalculator("invalid", 1)
+            PaceZoneCalculator("invalid", 1) # type: ignore
+    
+    def test_reject_calculation_for_invalid_precision_format(self):
+        with pytest.raises(TypeError):
+            PaceZoneCalculator(400, "invalid") # type: ignore
