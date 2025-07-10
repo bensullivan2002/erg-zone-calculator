@@ -17,7 +17,7 @@ class PaceZoneCalculator:
 
     def calculate_lower_bound_time_per_500m(
         self, zone: str, config_file_path: str
-    ) -> float:
+    ) -> float | str:
         if not isinstance(zone, str):
             raise TypeError("Invalid zone format - must be a string")
         if not isinstance(config_file_path, str):
@@ -26,6 +26,8 @@ class PaceZoneCalculator:
             with open(Path(config_file_path), "r") as f:
                 config = json.load(f)
                 lower_bound_coefficient = config[zone]["lower_bound"]
+                if lower_bound_coefficient is None:
+                    return "No lower bound available"
                 lower_bound_time_per_500m = 500 / (
                     (2000 / self.two_km_time) * lower_bound_coefficient
                 )
@@ -45,7 +47,7 @@ class PaceZoneCalculator:
 
     def calculate_upper_bound_time_per_500m(
         self, zone: str, config_file_path: str
-    ) -> float:
+    ) -> float | str:
         if not isinstance(zone, str):
             raise TypeError("Invalid zone format - must be a string")
         if not isinstance(config_file_path, str):
@@ -54,6 +56,8 @@ class PaceZoneCalculator:
             with open(Path(config_file_path), "r") as f:
                 config = json.load(f)
                 upper_bound_coefficient = config[zone]["upper_bound"]
+                if upper_bound_coefficient is None:
+                    return "No upper bound available"
                 upper_bound_time_per_500m = 500 / (
                     (2000 / self.two_km_time) * upper_bound_coefficient
                 )

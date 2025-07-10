@@ -51,6 +51,8 @@ class TestPaceZoneCalculatorShould:
         with pytest.raises(KeyError):
             calculator.calculate_lower_bound_time_per_500m("INVALID_ZONE", "config/pace_zones.json")
     
+    # TODO: Add test for "No lower bound available" case
+    
     @pytest.mark.parametrize(
         "two_km_time,zone,expected_upper_bound, precision",
         [
@@ -84,3 +86,5 @@ class TestPaceZoneCalculatorShould:
             calculator.calculate_upper_bound_time_per_500m("UT3", "test/fixtures/invalid_pace_zones.json")
         with pytest.raises(KeyError):
             calculator.calculate_upper_bound_time_per_500m("INVALID_ZONE", "config/pace_zones.json")
+    
+    # TODO: Add test for "No upper bound available" case
