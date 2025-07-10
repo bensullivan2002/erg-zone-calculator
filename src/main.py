@@ -2,7 +2,7 @@ import json
 from calculate_pace_zones import PaceZoneCalculator
 
 def main():
-    calculator = PaceZoneCalculator(415, 1)
+    calculator = PaceZoneCalculator("6:55.0", 1)
     config_file_path = "config/pace_zones.json"
     with open(config_file_path, "r") as f:
         zones = json.load(f)
