@@ -8,3 +8,8 @@ dependencies = [
   "pytest>=8.4.1",
   "pytest-cov>=6.2.1",
 ]
+
+[dependency-groups]
+dev = [
+    "ty>=0.0.1a14",
+]
