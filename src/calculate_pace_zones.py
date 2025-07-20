@@ -32,7 +32,9 @@ class PaceZoneCalculator:
                 lower_bound_time_per_500m = 500 / (
                     (2000 / self.two_km_time) * lower_bound_coefficient
                 )
-                return _format_seconds_to_time_str(round(lower_bound_time_per_500m, self.precision), self.precision)
+                return _format_seconds_to_time_str(
+                    round(lower_bound_time_per_500m, self.precision), self.precision
+                )
         except FileNotFoundError as e:
             print(f"Config file not found at {config_file_path}")
             raise e
@@ -62,7 +64,9 @@ class PaceZoneCalculator:
                 upper_bound_time_per_500m = 500 / (
                     (2000 / self.two_km_time) * upper_bound_coefficient
                 )
-                return _format_seconds_to_time_str(round(upper_bound_time_per_500m, self.precision), self.precision)
+                return _format_seconds_to_time_str(
+                    round(upper_bound_time_per_500m, self.precision), self.precision
+                )
         except FileNotFoundError as e:
             print(f"Config file not found at {config_file_path}")
             raise e
@@ -77,9 +81,11 @@ class PaceZoneCalculator:
             raise e
         pass
 
+
 def _parse_time_str_to_seconds(time_str: str) -> float:
     minutes, seconds = time_str.split(":")
     return int(minutes) * 60 + float(seconds)
+
 
 def _format_seconds_to_time_str(seconds: float, precision: int) -> str:
     minutes = int(seconds // 60)

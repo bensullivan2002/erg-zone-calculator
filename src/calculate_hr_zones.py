@@ -10,9 +10,7 @@ class HRZoneCalculator:
             raise ValueError("Invalid max_HR - must be greater than 0")
         self.max_HR = max_HR
 
-    def calculate_lower_bound_HR(
-        self, zone: str, config_file_path: str
-    ) -> str:
+    def calculate_lower_bound_HR(self, zone: str, config_file_path: str) -> str:
         if not isinstance(zone, str):
             raise TypeError("Invalid zone format - must be a string")
         if not isinstance(config_file_path, str):
@@ -38,9 +36,7 @@ class HRZoneCalculator:
             print(f"An unexpected error occurred: {e}")
             raise e
 
-    def calculate_upper_bound_HR(
-        self, zone: str, config_file_path: str
-    ) -> str:
+    def calculate_upper_bound_HR(self, zone: str, config_file_path: str) -> str:
         if not isinstance(zone, str):
             raise TypeError("Invalid zone format - must be a string")
         if not isinstance(config_file_path, str):

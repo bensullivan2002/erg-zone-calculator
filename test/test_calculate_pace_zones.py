@@ -13,7 +13,9 @@ class TestPaceZoneCalculatorShould:
             (400, "invalid", TypeError),  # type: ignore
         ],
     )
-    def test_reject_invalid_arguments_for_PaceZoneCalculator_constructor(self, two_km_time, precision, expected_exception):
+    def test_reject_invalid_arguments_for_PaceZoneCalculator_constructor(
+        self, two_km_time, precision, expected_exception
+    ):
         with pytest.raises(expected_exception):
             PaceZoneCalculator(two_km_time, precision)
 
@@ -41,18 +43,24 @@ class TestPaceZoneCalculatorShould:
     def test_reject_invalid_arguments_for_calculate_lower_bound_time_per_500m(self):
         calculator = PaceZoneCalculator("6:40.0", 1)
         with pytest.raises(TypeError):
-            calculator.calculate_lower_bound_time_per_500m(123, "config/pace_zones.json") # type: ignore
+            calculator.calculate_lower_bound_time_per_500m(
+                123, "config/pace_zones.json"
+            )  # type: ignore
         with pytest.raises(TypeError):
-            calculator.calculate_lower_bound_time_per_500m("UT2", 123) # type: ignore
+            calculator.calculate_lower_bound_time_per_500m("UT2", 123)  # type: ignore
         with pytest.raises(FileNotFoundError):
             calculator.calculate_lower_bound_time_per_500m("UT2", "invalid_path.json")
         with pytest.raises(json.JSONDecodeError):
-            calculator.calculate_lower_bound_time_per_500m("UT3", "test/fixtures/invalid_pace_zones.json")
+            calculator.calculate_lower_bound_time_per_500m(
+                "UT3", "test/fixtures/invalid_pace_zones.json"
+            )
         with pytest.raises(KeyError):
-            calculator.calculate_lower_bound_time_per_500m("INVALID_ZONE", "config/pace_zones.json")
-    
+            calculator.calculate_lower_bound_time_per_500m(
+                "INVALID_ZONE", "config/pace_zones.json"
+            )
+
     # TODO: Add test for "No lower bound available" case
-    
+
     @pytest.mark.parametrize(
         "two_km_time,zone,expected_upper_bound, precision",
         [
@@ -78,14 +86,20 @@ class TestPaceZoneCalculatorShould:
     def test_reject_invalid_arguments_for_calculate_upper_bound_time_per_500m(self):
         calculator = PaceZoneCalculator("6:40.0", 1)
         with pytest.raises(TypeError):
-            calculator.calculate_upper_bound_time_per_500m(123, "config/pace_zones.json") # type: ignore
+            calculator.calculate_upper_bound_time_per_500m(
+                123, "config/pace_zones.json"
+            )  # type: ignore
         with pytest.raises(TypeError):
-            calculator.calculate_upper_bound_time_per_500m("UT2", 123) # type: ignore
+            calculator.calculate_upper_bound_time_per_500m("UT2", 123)  # type: ignore
         with pytest.raises(FileNotFoundError):
             calculator.calculate_upper_bound_time_per_500m("UT2", "invalid_path.json")
         with pytest.raises(json.JSONDecodeError):
-            calculator.calculate_upper_bound_time_per_500m("UT3", "test/fixtures/invalid_pace_zones.json")
+            calculator.calculate_upper_bound_time_per_500m(
+                "UT3", "test/fixtures/invalid_pace_zones.json"
+            )
         with pytest.raises(KeyError):
-            calculator.calculate_upper_bound_time_per_500m("INVALID_ZONE", "config/pace_zones.json")
-    
+            calculator.calculate_upper_bound_time_per_500m(
+                "INVALID_ZONE", "config/pace_zones.json"
+            )
+
     # TODO: Add test for "No upper bound available" case

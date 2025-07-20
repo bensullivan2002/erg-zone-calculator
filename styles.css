@@ -1,0 +1,591 @@
+/* Material Design CSS Styling */
+
+/* CSS Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Material Design Color Scheme */
+:root {
+    --primary-color: #1976D2;
+    --secondary-color: #03DAC6;
+    --surface-color: #FFFFFF;
+    --background-color: #F5F5F5;
+    --on-primary: #FFFFFF;
+    --on-surface: #000000;
+    --text-primary: rgba(0, 0, 0, 0.87);
+    --text-secondary: rgba(0, 0, 0, 0.6);
+    --elevation-2: 0 2px 4px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
+    --elevation-4: 0 4px 8px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.24);
+}
+
+/* Base Typography - Roboto Font */
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background-color: var(--background-color);
+    margin: 0;
+}
+
+/* Typography Scale */
+h1 {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 16px;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+p {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+/* CSS Grid Layout Structure */
+body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+/* Header Styling with Material Design */
+header {
+    background-color: var(--primary-color);
+    color: var(--on-primary);
+    padding: 24px 16px;
+    text-align: center;
+    box-shadow: var(--elevation-4);
+}
+
+header h1 {
+    color: var(--on-primary);
+    margin-bottom: 8px;
+}
+
+header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+/* Main Content Layout */
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* Section Spacing */
+section {
+    margin: 48px 0;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 48px 16px;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    box-shadow: var(--elevation-2);
+    margin: 32px 0;
+}
+
+.hero h2 {
+    color: var(--primary-color);
+    margin-bottom: 16px;
+}
+
+/* Features Section */
+.features {
+    text-align: center;
+}
+
+.features h2 {
+    color: var(--text-primary);
+    margin-bottom: 32px;
+}
+
+/* Feature Cards Grid Layout */
+.feature-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.feature-card {
+    background-color: var(--surface-color);
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: var(--elevation-2);
+    text-align: left;
+    transition: box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    box-shadow: var(--elevation-4);
+}
+
+.feature-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    margin-bottom: 0;
+}
+
+/* Call-to-Action Section */
+.cta {
+    text-align: center;
+    padding: 48px 16px;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    box-shadow: var(--elevation-2);
+}
+
+.cta h2 {
+    color: var(--text-primary);
+    margin-bottom: 24px;
+}
+
+/* Material Design Button */
+button {
+    background-color: var(--primary-color);
+    color: var(--on-primary);
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: var(--elevation-2);
+    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+}
+
+button:hover {
+    background-color: #1565C0;
+    box-shadow: var(--elevation-4);
+}
+
+button:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+button:active {
+    box-shadow: var(--elevation-2);
+    transform: translateY(1px);
+}
+
+/* Footer Styling */
+footer {
+    background-color: var(--surface-color);
+    padding: 32px 16px 24px;
+    text-align: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+.footer-info h3 {
+    color: var(--primary-color);
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.footer-info p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 0;
+}
+
+.footer-links h4 {
+    color: var(--text-primary);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.footer-links p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    margin-bottom: 0;
+}
+
+.footer-copyright p {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 0;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Responsive Design - Mobile First Approach */
+
+/* Mobile Base Styles (default - up to 599px) */
+/* Optimized for mobile readability and touch interaction */
+
+/* Small Mobile Adjustments (up to 480px) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 28px;
+        line-height: 1.1;
+    }
+    
+    h2 {
+        font-size: 22px;
+        line-height: 1.2;
+    }
+    
+    h3 {
+        font-size: 18px;
+    }
+    
+    p {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+    
+    header {
+        padding: 20px 12px;
+    }
+    
+    header h1 {
+        font-size: 26px;
+        margin-bottom: 6px;
+    }
+    
+    header p {
+        font-size: 16px;
+    }
+    
+    main {
+        padding: 0 12px;
+    }
+    
+    .hero {
+        padding: 32px 16px;
+        margin: 16px 0;
+    }
+    
+    .hero h2 {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+    
+    .hero p {
+        font-size: 15px;
+    }
+    
+    section {
+        margin: 32px 0;
+    }
+    
+    .feature-cards {
+        gap: 16px;
+    }
+    
+    .feature-card {
+        padding: 20px;
+    }
+    
+    .cta {
+        padding: 32px 16px;
+    }
+    
+    button {
+        padding: 14px 20px;
+        font-size: 16px;
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    footer {
+        padding: 20px 12px;
+    }
+    
+    .footer-content {
+        gap: 20px;
+    }
+    
+    .footer-info h3 {
+        font-size: 16px;
+    }
+    
+    .footer-info p {
+        font-size: 13px;
+    }
+    
+    .footer-links h4 {
+        font-size: 15px;
+    }
+    
+    .footer-links p {
+        font-size: 13px;
+    }
+    
+    .footer-copyright p {
+        font-size: 11px;
+    }
+}
+
+/* Tablet Breakpoint (600px and up) */
+@media (min-width: 600px) {
+    header {
+        padding: 32px 24px;
+    }
+    
+    header h1 {
+        font-size: 36px;
+    }
+    
+    header p {
+        font-size: 20px;
+    }
+    
+    main {
+        padding: 0 24px;
+    }
+    
+    .hero {
+        padding: 64px 32px;
+        margin: 24px 0;
+    }
+    
+    .hero h2 {
+        font-size: 28px;
+    }
+    
+    .hero p {
+        font-size: 17px;
+        max-width: 600px;
+        margin: 0 auto 16px;
+    }
+    
+    .feature-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+        max-width: 800px;
+        margin: 32px auto 0;
+    }
+    
+    .feature-card {
+        padding: 28px;
+    }
+    
+    .cta {
+        padding: 64px 32px;
+    }
+    
+    button {
+        padding: 16px 32px;
+        font-size: 18px;
+        width: auto;
+    }
+    
+    footer {
+        padding: 28px 24px;
+    }
+    
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+        text-align: left;
+    }
+    
+    .footer-copyright {
+        grid-column: 1 / -1;
+        text-align: center;
+    }
+}
+
+/* Large Tablet/Small Desktop (768px and up) */
+@media (min-width: 768px) {
+    h1 {
+        font-size: 36px;
+    }
+    
+    h2 {
+        font-size: 28px;
+    }
+    
+    .hero h2 {
+        font-size: 30px;
+    }
+    
+    .hero p {
+        font-size: 18px;
+        max-width: 700px;
+    }
+    
+    .feature-cards {
+        max-width: 900px;
+    }
+}
+
+/* Desktop Breakpoint (1024px and up) */
+@media (min-width: 1024px) {
+    header {
+        padding: 48px 32px;
+    }
+    
+    header h1 {
+        font-size: 40px;
+    }
+    
+    header p {
+        font-size: 22px;
+    }
+    
+    main {
+        padding: 0 32px;
+    }
+    
+    .hero {
+        padding: 80px 48px;
+    }
+    
+    .hero h2 {
+        font-size: 32px;
+    }
+    
+    .hero p {
+        font-size: 18px;
+        max-width: 800px;
+    }
+    
+    section {
+        margin: 64px 0;
+    }
+    
+    .feature-cards {
+        gap: 40px;
+        max-width: 1000px;
+    }
+    
+    .feature-card {
+        padding: 32px;
+    }
+    
+    .feature-card h3 {
+        font-size: 22px;
+    }
+    
+    .feature-card p {
+        font-size: 17px;
+    }
+    
+    .cta {
+        padding: 80px 48px;
+    }
+    
+    .cta h2 {
+        font-size: 30px;
+    }
+    
+    button {
+        padding: 18px 36px;
+        font-size: 18px;
+    }
+}
+
+/* Large Desktop (1200px and up) */
+@media (min-width: 1200px) {
+    main {
+        max-width: 1200px;
+    }
+    
+    .hero {
+        padding: 96px 64px;
+    }
+    
+    .hero h2 {
+        font-size: 36px;
+    }
+    
+    .hero p {
+        font-size: 20px;
+        max-width: 900px;
+    }
+    
+    .feature-cards {
+        gap: 48px;
+    }
+    
+    .feature-card {
+        padding: 40px;
+    }
+    
+    .cta {
+        padding: 96px 64px;
+    }
+}
+
+/* High DPI Display Optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Ensure crisp text rendering on high DPI displays */
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Accessibility and Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    header {
+        background-color: transparent !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+    
+    .hero, .cta {
+        box-shadow: none !important;
+        border: 1px solid #ccc;
+    }
+    
+    button {
+        display: none;
+    }
+}

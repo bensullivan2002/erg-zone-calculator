@@ -1,2 +1,8 @@
 .vscode
 .venv
+.kiro
+.pytest_cache
+__pycache__
+.markdownlint.json
+htmlcov
+.coverage
