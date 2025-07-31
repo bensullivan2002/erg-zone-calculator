@@ -18,7 +18,7 @@ def sample_hr_config_data():
         "Zone 2": {"lower_bound": 0.6, "upper_bound": 0.7},
         "Zone 3": {"lower_bound": 0.7, "upper_bound": 0.8},
         "Zone 4": {"lower_bound": 0.8, "upper_bound": 0.9},
-        "Zone 5": {"lower_bound": 0.9, "upper_bound": 1.0}
+        "Zone 5": {"lower_bound": 0.9, "upper_bound": 1.0},
     }
 
 
@@ -30,5 +30,5 @@ def sample_pace_config_data():
         "UT1": {"lower_bound": 1.08, "upper_bound": 1.15},
         "AT": {"lower_bound": 1.02, "upper_bound": 1.06},
         "TR": {"lower_bound": 0.97, "upper_bound": 1.02},
-        "AN": {"lower_bound": 0.93, "upper_bound": 0.97}
+        "AN": {"lower_bound": 0.93, "upper_bound": 0.97},
     }
