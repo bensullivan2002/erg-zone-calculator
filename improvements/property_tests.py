@@ -3,6 +3,15 @@ Property-based tests using Hypothesis.
 """
 
 from hypothesis import given, strategies as st, assume
+import pytest
+import tempfile
+import json
+from pathlib import Path
+
+# Import the improved classes
+from type_safe_calculators import HRZoneCalculator, PaceZoneCalculator, HRBenchmark, PaceBenchmark
+from optimized_config import OptimizedZoneConfig
+from domain_models import ZoneBounds, TrainingZone
 
 
 class TestZoneCalculatorProperties:
@@ -102,3 +111,106 @@ class TestZoneCalculatorProperties:
 
 # Add to requirements.txt: hypothesis>=6.0.0
 # Run with: pytest improvements/property_tests.py
+
+class TestImprovedZoneCalculators:
+    """Property-based tests for the improved calculators."""
+    
+    @pytest.fixture
+    def temp_config(self):
+        """Create temporary config file for testing."""
+        config_data = {
+            "Zone 1": {"lower_bound": 0.5, "upper_bound": 0.6},
+            "Zone 2": {"lower_bound": 0.6, "upper_bound": 0.7},
+            "Zone 3": {"lower_bound": 0.7, "upper_bound": 0.8}
+        }
+        
+        temp_file = tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False)
+        json.dump(config_data, temp_file)
+        temp_file.close()
+        
+        yield temp_file.name
+        Path(temp_file.name).unlink()
+    
+    @given(max_hr=st.integers(min_value=100, max_value=240))
+    def test_hr_benchmark_validation(self, max_hr):
+        """Test HR benchmark validation properties."""
+        benchmark = HRBenchmark(max_hr=max_hr)
+        
+        # Properties that should always hold
+        assert 100 <= benchmark.max_hr <= 240
+        assert isinstance(benchmark.max_hr, int)
+    
+    @given(
+        max_hr=st.integers(min_value=50, max_value=99) | 
+               st.integers(min_value=241, max_value=300)
+    )
+    def test_hr_benchmark_invalid_values(self, max_hr):
+        """Test that invalid HR values are rejected."""
+        with pytest.raises(ValueError):
+            HRBenchmark(max_hr=max_hr)
+    
+    @given(
+        distance=st.integers(min_value=500, max_value=10000),
+        time=st.floats(min_value=60.0, max_value=3600.0)
+    )
+    def test_pace_benchmark_properties(self, distance, time):
+        """Test pace benchmark properties."""
+        assume(time > 0 and distance > 0)
+        
+        benchmark = PaceBenchmark(distance_meters=distance, time_seconds=time)
+        
+        # Properties
+        assert benchmark.distance_meters > 0
+        assert benchmark.time_seconds > 0
+        assert benchmark.base_500m_time > 0
+        
+        # Mathematical property: base_500m_time should scale correctly
+        expected_base = time / (distance / 500)
+        assert abs(benchmark.base_500m_time - expected_base) < 0.001
+    
+    @given(
+        lower=st.floats(min_value=50.0, max_value=150.0),
+        upper=st.floats(min_value=151.0, max_value=250.0)
+    )
+    def test_zone_bounds_properties(self, lower, upper):
+        """Test zone bounds value object properties."""
+        bounds = ZoneBounds(lower=lower, upper=upper)
+        
+        # Properties
+        assert bounds.lower < bounds.upper
+        assert bounds.range_size == upper - lower
+        assert bounds.midpoint == (lower + upper) / 2
+        
+        # Containment properties
+        assert bounds.contains(bounds.midpoint)
+        assert bounds.contains(lower)
+        assert bounds.contains(upper)
+        assert not bounds.contains(lower - 1)
+        assert not bounds.contains(upper + 1)
+    
+    @given(
+        zone_name=st.text(min_size=1, max_size=20),
+        lower=st.floats(min_value=50.0, max_value=150.0),
+        upper=st.floats(min_value=151.0, max_value=250.0)
+    )
+    def test_training_zone_properties(self, zone_name, lower, upper):
+        """Test training zone domain model properties."""
+        assume(zone_name.strip())  # Non-empty after stripping
+        
+        bounds = ZoneBounds(lower=lower, upper=upper)
+        zone = TrainingZone(name=zone_name.strip(), bounds=bounds)
+        
+        # Properties
+        assert zone.name == zone_name.strip()
+        assert zone.bounds == bounds
+        assert zone.intensity_level in ["Low", "Moderate", "High", "Very High", "Unknown"]
+        
+        # Behavior properties
+        assert zone.is_target_zone(bounds.midpoint)
+        assert zone.distance_from_zone(bounds.midpoint) == 0.0
+        
+        # Distance calculation properties
+        outside_value = upper + 10
+        distance = zone.distance_from_zone(outside_value)
+        assert distance > 0
+        assert distance == outside_value - upper
