@@ -47,8 +47,8 @@ class ZoneResult(BaseModel):
     """Individual zone calculation result."""
 
     zone_name: str = Field(..., description="Name of the training zone")
-    lower_bound: int | float = Field(..., description="Lower bound numeric value")
-    upper_bound: int | float = Field(..., description="Upper bound numeric value")
+    lower_bound: int | float | None = Field(..., description="Lower bound numeric value or None for open-ended")
+    upper_bound: int | float | None = Field(..., description="Upper bound numeric value or None for open-ended")
     lower_bound_formatted: str = Field(
         ..., description="Lower bound formatted for display"
     )

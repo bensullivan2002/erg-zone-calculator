@@ -1,14 +1,16 @@
 import json
 from pathlib import Path
+
 from pydantic import BaseModel, ValidationError
+from .domain_models import Zone
 
 
 class ZoneData(BaseModel):
     """Data model for a single zone configuration."""
 
     name: str
-    lower_bound_coefficient: float
-    upper_bound_coefficient: float
+    lower_bound_coefficient: float | None
+    upper_bound_coefficient: float | None
 
 
 class ZoneConfig:
@@ -22,6 +24,7 @@ class ZoneConfig:
         """
         self.config_file_path = config_file_path
         self._zones: list[ZoneData] = []
+        self._zone_objects: list[Zone] = []
         self._load_config()
 
     def _load_config(self) -> None:
@@ -30,15 +33,22 @@ class ZoneConfig:
             with open(Path(self.config_file_path).resolve(), "r") as f:
                 raw_data = json.load(f)
 
-            # Validate each zone using Pydantic
+            # Validate each zone using Pydantic and create domain objects
             for zone_name, zone_data in raw_data.items():
-                self._zones.append(
-                    ZoneData(
-                        name=zone_name,
-                        lower_bound_coefficient=zone_data["lower_bound"],
-                        upper_bound_coefficient=zone_data["upper_bound"],
-                    )
+                zone_data_obj = ZoneData(
+                    name=zone_name,
+                    lower_bound_coefficient=zone_data["lower_bound"],
+                    upper_bound_coefficient=zone_data["upper_bound"],
                 )
+                self._zones.append(zone_data_obj)
+                
+                # Create domain Zone object
+                zone_obj = Zone(
+                    name=zone_name,
+                    lower_bound_coefficient=zone_data["lower_bound"],
+                    upper_bound_coefficient=zone_data["upper_bound"],
+                )
+                self._zone_objects.append(zone_obj)
 
         except FileNotFoundError as e:
             raise FileNotFoundError(
@@ -76,30 +86,55 @@ class ZoneConfig:
                 return zone
         raise KeyError(f"Zone '{zone_name}' not found in configuration")
 
-    def get_lower_bound_coefficient(self, zone: str) -> float:
+    def get_lower_bound_coefficient(self, zone: str) -> float | None:
         """Get the lower bound coefficient for a zone.
 
         Args:
             zone: The zone name
 
         Returns:
-            The coefficient used to calculate the lower bound
+            The coefficient used to calculate the lower bound, or None for open-ended zones
 
         Raises:
             KeyError: If the zone doesn't exist in the configuration
         """
         return self._get_zone(zone).lower_bound_coefficient
 
-    def get_upper_bound_coefficient(self, zone: str) -> float:
+    def get_upper_bound_coefficient(self, zone: str) -> float | None:
         """Get the upper bound coefficient for a zone.
 
         Args:
             zone: The zone name
 
         Returns:
-            The coefficient used to calculate the upper bound
+            The coefficient used to calculate the upper bound, or None for open-ended zones
 
         Raises:
             KeyError: If the zone doesn't exist in the configuration
         """
         return self._get_zone(zone).upper_bound_coefficient
+
+    def get_zone_object(self, zone_name: str) -> Zone:
+        """Get a Zone domain object by name.
+
+        Args:
+            zone_name: The zone name to find
+
+        Returns:
+            The Zone domain object
+
+        Raises:
+            KeyError: If the zone doesn't exist in the configuration
+        """
+        for zone in self._zone_objects:
+            if zone.name == zone_name:
+                return zone
+        raise KeyError(f"Zone '{zone_name}' not found in configuration")
+
+    def get_all_zone_objects(self) -> list[Zone]:
+        """Get all Zone domain objects from the configuration.
+
+        Returns:
+            List of Zone domain objects
+        """
+        return self._zone_objects.copy()

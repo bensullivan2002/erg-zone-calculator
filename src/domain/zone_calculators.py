@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from zone_configs import ZoneConfig
+from .zone_configs import ZoneConfig
+from .domain_models import Zone, create_benchmark_from_primitives
 
 
 class ZoneCalculator(ABC):
@@ -47,9 +48,32 @@ class ZoneCalculator(ABC):
         """
         pass
 
+    def calculate_zone_bounds(
+        self, zone_name: str, benchmark_value: int | float | tuple[int, float]
+    ) -> tuple[int | float | None, int | float | None]:
+        """Calculate both bounds for a zone using domain objects.
+
+        Args:
+            zone_name: The zone name to calculate bounds for
+            benchmark_value: The performance benchmark value
+
+        Returns:
+            Tuple of (lower_bound, upper_bound), where bounds can be None for open-ended zones
+        """
+        # Create domain objects from primitives
+        zone = Zone(
+            name=zone_name,
+            lower_bound_coefficient=self.zone_config.get_lower_bound_coefficient(zone_name),
+            upper_bound_coefficient=self.zone_config.get_upper_bound_coefficient(zone_name),
+        )
+        benchmark = create_benchmark_from_primitives(benchmark_value)
+        
+        # Use domain object methods
+        return benchmark.calculate_zone_bounds(zone)
+
     def calculate_all_lower_bounds(
         self, benchmark_value: int | float | tuple[int, float]
-    ) -> dict[str, int | float]:
+    ) -> dict[str, int | float | None]:
         """Calculate lower bounds for all zones in the configuration.
 
         Args:
@@ -58,16 +82,20 @@ class ZoneCalculator(ABC):
                 - For pace: (distance_meters, time_seconds) tuple (e.g., (2000, 420.0))
 
         Returns:
-            Dictionary mapping zone names to their lower bound numeric values
+            Dictionary mapping zone names to their lower bound numeric values (or None for open-ended zones)
         """
-        return {
-            zone: self.calculate_lower_bound(zone, benchmark_value)
-            for zone in self.zone_config.get_zone_names()
-        }
+        result = {}
+        for zone_name in self.zone_config.get_zone_names():
+            try:
+                result[zone_name] = self.calculate_lower_bound(zone_name, benchmark_value)
+            except ValueError:
+                # Zone has no lower bound (open-ended)
+                result[zone_name] = None
+        return result
 
     def calculate_all_upper_bounds(
         self, benchmark_value: int | float | tuple[int, float]
-    ) -> dict[str, int | float]:
+    ) -> dict[str, int | float | None]:
         """Calculate upper bounds for all zones in the configuration.
 
         Args:
@@ -76,12 +104,16 @@ class ZoneCalculator(ABC):
                 - For pace: (distance_meters, time_seconds) tuple (e.g., (2000, 420.0))
 
         Returns:
-            Dictionary mapping zone names to their upper bound numeric values
+            Dictionary mapping zone names to their upper bound numeric values (or None for open-ended zones)
         """
-        return {
-            zone: self.calculate_upper_bound(zone, benchmark_value)
-            for zone in self.zone_config.get_zone_names()
-        }
+        result = {}
+        for zone_name in self.zone_config.get_zone_names():
+            try:
+                result[zone_name] = self.calculate_upper_bound(zone_name, benchmark_value)
+            except ValueError:
+                # Zone has no upper bound (open-ended)
+                result[zone_name] = None
+        return result
 
 
 class HRZoneCalculator(ZoneCalculator):
@@ -110,9 +142,11 @@ class HRZoneCalculator(ZoneCalculator):
         if isinstance(benchmark_value, tuple):
             raise ValueError("HR calculator expects maxHR as int, not tuple")
 
-        coefficient = self.zone_config.get_lower_bound_coefficient(zone)
-        lower_bound_hr = benchmark_value * coefficient
-        return int(lower_bound_hr)
+        # Use domain objects for calculation
+        lower_bound, _ = self.calculate_zone_bounds(zone, benchmark_value)
+        if lower_bound is None:
+            raise ValueError(f"Zone '{zone}' has no lower bound defined")
+        return lower_bound
 
     def calculate_upper_bound(
         self, zone: str, benchmark_value: int | float | tuple[int, float]
@@ -129,9 +163,11 @@ class HRZoneCalculator(ZoneCalculator):
         if isinstance(benchmark_value, tuple):
             raise ValueError("HR calculator expects maxHR as int, not tuple")
 
-        coefficient = self.zone_config.get_upper_bound_coefficient(zone)
-        upper_bound_hr = benchmark_value * coefficient
-        return int(upper_bound_hr)
+        # Use domain objects for calculation
+        _, upper_bound = self.calculate_zone_bounds(zone, benchmark_value)
+        if upper_bound is None:
+            raise ValueError(f"Zone '{zone}' has no upper bound defined")
+        return upper_bound
 
 
 class PaceZoneCalculator(ZoneCalculator):
@@ -162,13 +198,11 @@ class PaceZoneCalculator(ZoneCalculator):
                 "Pace calculator expects (distance_meters, time_seconds) tuple"
             )
 
-        distance_meters, time_seconds = benchmark_value
-        coefficient = self.zone_config.get_lower_bound_coefficient(zone)
-
-        # Convert any distance/time to 500m base time, then apply coefficient
-        base_500m_time = time_seconds / (distance_meters / 500)
-        lower_bound_time = base_500m_time * coefficient
-        return lower_bound_time
+        # Use domain objects for calculation
+        lower_bound, _ = self.calculate_zone_bounds(zone, benchmark_value)
+        if lower_bound is None:
+            raise ValueError(f"Zone '{zone}' has no lower bound defined")
+        return lower_bound
 
     def calculate_upper_bound(
         self, zone: str, benchmark_value: int | float | tuple[int, float]
@@ -187,10 +221,8 @@ class PaceZoneCalculator(ZoneCalculator):
                 "Pace calculator expects (distance_meters, time_seconds) tuple"
             )
 
-        distance_meters, time_seconds = benchmark_value
-        coefficient = self.zone_config.get_upper_bound_coefficient(zone)
-
-        # Convert any distance/time to 500m base time, then apply coefficient
-        base_500m_time = time_seconds / (distance_meters / 500)
-        upper_bound_time = base_500m_time * coefficient
-        return upper_bound_time
+        # Use domain objects for calculation
+        _, upper_bound = self.calculate_zone_bounds(zone, benchmark_value)
+        if upper_bound is None:
+            raise ValueError(f"Zone '{zone}' has no upper bound defined")
+        return upper_bound

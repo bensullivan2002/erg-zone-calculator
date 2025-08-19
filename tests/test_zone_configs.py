@@ -12,7 +12,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from zone_configs import ZoneConfig, ZoneData
+from domain.zone_configs import ZoneConfig, ZoneData
 
 
 class TestZoneData:

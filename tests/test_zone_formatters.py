@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from zone_formatters import HRFormatter, PaceFormatter, VerbosePaceFormatter
+from domain.zone_formatters import HRFormatter, PaceFormatter, VerbosePaceFormatter
 
 
 class TestHRFormatter:

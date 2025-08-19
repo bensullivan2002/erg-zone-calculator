@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 import logging
 
 
-from models import (
+from .models import (
     HRZoneRequest,
     PaceZoneRequest,
     HRZoneResponse,
@@ -17,9 +17,9 @@ from models import (
     ZoneResult,
     ErrorResponse,
 )
-from zone_configs import ZoneConfig
-from zone_calculators import HRZoneCalculator, PaceZoneCalculator
-from zone_formatters import HRFormatter, PaceFormatter
+from domain.zone_configs import ZoneConfig
+from domain.zone_calculators import HRZoneCalculator, PaceZoneCalculator
+from domain.zone_formatters import HRFormatter, PaceFormatter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

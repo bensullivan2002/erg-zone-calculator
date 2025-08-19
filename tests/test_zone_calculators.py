@@ -11,8 +11,8 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from zone_configs import ZoneConfig
-from zone_calculators import HRZoneCalculator, PaceZoneCalculator
+from domain.zone_configs import ZoneConfig
+from domain.zone_calculators import HRZoneCalculator, PaceZoneCalculator
 
 
 class TestHRZoneCalculator:
