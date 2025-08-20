@@ -74,7 +74,7 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "erg-zone-calculator",
-        "timestamp": datetime.utcnow(),  # You could use datetime.utcnow()
+        "timestamp": datetime.utcnow(),
     }
 
 
