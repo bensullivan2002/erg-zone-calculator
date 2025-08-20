@@ -4,11 +4,25 @@ Pydantic models for API request/response validation.
 
 from pydantic import BaseModel, Field
 
+from src.domain.constants import (
+    MAX_DISTANCE_METERS,
+    MAX_HEART_RATE,
+    MAX_TIME_SECONDS,
+    MIN_DISTANCE_METERS,
+    MIN_HEART_RATE,
+    MIN_TIME_SECONDS,
+)
+
 
 class HRZoneRequest(BaseModel):
     """Request model for HR zone calculations."""
 
-    max_hr: int = Field(..., ge=100, le=240, description="Maximum heart rate in BPM")
+    max_hr: int = Field(
+        ...,
+        ge=MIN_HEART_RATE,
+        le=MAX_HEART_RATE,
+        description="Maximum heart rate in BPM",
+    )
     config_path: str = Field(
         default="config/hr_zones.json", description="Path to HR zone configuration file"
     )
@@ -24,9 +38,14 @@ class PaceZoneRequest(BaseModel):
     """Request model for pace zone calculations."""
 
     distance_meters: int = Field(
-        ..., ge=500, le=10000, description="Distance in meters"
+        ...,
+        ge=MIN_DISTANCE_METERS,
+        le=MAX_DISTANCE_METERS,
+        description="Distance in meters",
     )
-    time_seconds: float = Field(..., ge=60, le=3600, description="Time in seconds")
+    time_seconds: float = Field(
+        ..., ge=MIN_TIME_SECONDS, le=MAX_TIME_SECONDS, description="Time in seconds"
+    )
     config_path: str = Field(
         default="config/pace_zones.json",
         description="Path to pace zone configuration file",
@@ -47,8 +66,12 @@ class ZoneResult(BaseModel):
     """Individual zone calculation result."""
 
     zone_name: str = Field(..., description="Name of the training zone")
-    lower_bound: int | float | None = Field(..., description="Lower bound numeric value or None for open-ended")
-    upper_bound: int | float | None = Field(..., description="Upper bound numeric value or None for open-ended")
+    lower_bound: int | float | None = Field(
+        ..., description="Lower bound numeric value or None for open-ended"
+    )
+    upper_bound: int | float | None = Field(
+        ..., description="Upper bound numeric value or None for open-ended"
+    )
     lower_bound_formatted: str = Field(
         ..., description="Lower bound formatted for display"
     )

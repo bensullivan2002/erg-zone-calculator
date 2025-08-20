@@ -56,8 +56,16 @@ class TestAPIIntegration:
         Path(temp_file.name).unlink()
 
     def test_root_endpoint(self, client):
-        """Test root endpoint."""
+        """Test root endpoint serves HTML landing page."""
         response = client.get("/")
+        assert response.status_code == 200
+        assert response.headers["content-type"] == "text/html; charset=utf-8"
+        assert "Rowing Zone Calculator" in response.text
+        assert "<!DOCTYPE html>" in response.text
+
+    def test_api_info_endpoint(self, client):
+        """Test API info endpoint."""
+        response = client.get("/api")
         assert response.status_code == 200
 
         data = response.json()
@@ -190,7 +198,7 @@ class TestAPIIntegration:
         """Test malformed JSON request."""
         response = client.post(
             "/calculate/hr-zones",
-            data="invalid json",
+            content="invalid json",
             headers={"Content-Type": "application/json"},
         )
         assert response.status_code == 422

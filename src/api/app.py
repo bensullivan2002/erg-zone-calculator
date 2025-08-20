@@ -5,8 +5,10 @@ Provides REST API endpoints for calculating training zones.
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 import logging
+from pathlib import Path
 
 
 from .models import (
@@ -17,9 +19,9 @@ from .models import (
     ZoneResult,
     ErrorResponse,
 )
-from domain.zone_configs import ZoneConfig
-from domain.zone_calculators import HRZoneCalculator, PaceZoneCalculator
-from domain.zone_formatters import HRFormatter, PaceFormatter
+from src.domain.zone_configs import ZoneConfig
+from src.domain.zone_calculators import HRZoneCalculator, PaceZoneCalculator
+from src.domain.zone_formatters import HRFormatter, PaceFormatter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -43,10 +45,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files
+static_path = Path(__file__).parent.parent / "static"
+app.mount("/static", StaticFiles(directory=static_path), name="static")
+
 
 @app.get("/")
 async def root():
-    """Health check endpoint."""
+    """Serve the main landing page."""
+    static_path = Path(__file__).parent.parent / "static" / "index.html"
+    return FileResponse(static_path)
+
+@app.get("/api")
+async def api_info():
+    """API information endpoint."""
     return {
         "message": "ERG Zone Calculator API",
         "status": "healthy",

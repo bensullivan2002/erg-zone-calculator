@@ -7,7 +7,7 @@ from src.domain.domain_models import (
     Zone,
     HRBenchmark,
     PaceBenchmark,
-    create_benchmark_from_primitives,
+    create_benchmark,
 )
 
 
@@ -214,32 +214,33 @@ class TestPaceBenchmark:
 class TestBenchmarkFactory:
     """Test benchmark factory function."""
 
-    def test_create_hr_benchmark_from_int(self):
-        """Test creating HR benchmark from int."""
-        benchmark = create_benchmark_from_primitives(185)
+    def test_create_hr_benchmark(self):
+        """Test creating HR benchmark."""
+        benchmark = create_benchmark("hr", max_hr=185)
         assert isinstance(benchmark, HRBenchmark)
         assert benchmark.max_hr == 185
 
-    def test_create_hr_benchmark_from_float(self):
-        """Test creating HR benchmark from float."""
-        benchmark = create_benchmark_from_primitives(185.0)
-        assert isinstance(benchmark, HRBenchmark)
-        assert benchmark.max_hr == 185
-
-    def test_create_pace_benchmark_from_tuple(self):
-        """Test creating pace benchmark from tuple."""
-        benchmark = create_benchmark_from_primitives((2000, 420.0))
+    def test_create_pace_benchmark(self):
+        """Test creating pace benchmark."""
+        benchmark = create_benchmark("pace", distance_meters=2000, time_seconds=420.0)
         assert isinstance(benchmark, PaceBenchmark)
         assert benchmark.distance_meters == 2000
         assert benchmark.time_seconds == 420.0
 
-    def test_create_benchmark_invalid_input(self):
-        """Test creating benchmark with invalid input."""
-        with pytest.raises(ValueError, match="benchmark_value must be either maxHR"):
-            create_benchmark_from_primitives("invalid")
+    def test_create_benchmark_invalid_type(self):
+        """Test creating benchmark with invalid type."""
+        with pytest.raises(ValueError, match="Unknown benchmark type: invalid"):
+            create_benchmark("invalid", max_hr=185)
 
-        with pytest.raises(ValueError, match="benchmark_value must be either maxHR"):
-            create_benchmark_from_primitives((1000,))  # Tuple with wrong length
+    def test_create_hr_benchmark_missing_param(self):
+        """Test creating HR benchmark with missing parameter."""
+        with pytest.raises(ValueError, match="max_hr parameter required"):
+            create_benchmark("hr")
 
-        with pytest.raises(ValueError, match="benchmark_value must be either maxHR"):
-            create_benchmark_from_primitives([2000, 420.0])  # List instead of tuple
+    def test_create_pace_benchmark_missing_params(self):
+        """Test creating pace benchmark with missing parameters."""
+        with pytest.raises(ValueError, match="distance_meters and time_seconds parameters required"):
+            create_benchmark("pace", distance_meters=2000)
+
+        with pytest.raises(ValueError, match="distance_meters and time_seconds parameters required"):
+            create_benchmark("pace", time_seconds=420.0)

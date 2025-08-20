@@ -10,7 +10,7 @@ class InfraStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        static_site_assets_bucket = aws_s3.Bucket(
+        static_site_assets_bucket = aws_s3.Bucket( # noqa: F841
             self,
             "StaticSiteAssetsBucket",
             versioned=True,

@@ -5,6 +5,15 @@ Domain models for Zone and Benchmark objects to eliminate primitive obsession.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from .constants import (
+    MAX_DISTANCE_METERS,
+    MAX_HEART_RATE,
+    MAX_TIME_SECONDS,
+    MIN_DISTANCE_METERS,
+    MIN_HEART_RATE,
+    MIN_TIME_SECONDS,
+)
+
 
 @dataclass(frozen=True)
 class Zone:
@@ -20,26 +29,37 @@ class Zone:
             raise ValueError("Zone name cannot be empty")
 
         # Allow None values for open-ended zones
-        if (
-            self.lower_bound_coefficient is not None
-            and self.lower_bound_coefficient <= 0
-        ):
+        if not self._is_valid_coefficient(self.lower_bound_coefficient):
             raise ValueError("Lower bound coefficient must be positive")
-        if (
-            self.upper_bound_coefficient is not None
-            and self.upper_bound_coefficient <= 0
-        ):
+        if not self._is_valid_coefficient(self.upper_bound_coefficient):
             raise ValueError("Upper bound coefficient must be positive")
 
         # Only check ordering if both coefficients are not None
-        if (
-            self.lower_bound_coefficient is not None
-            and self.upper_bound_coefficient is not None
-            and self.lower_bound_coefficient >= self.upper_bound_coefficient
-        ):
+        if not self._has_valid_coefficient_order():
             raise ValueError(
                 "Lower bound coefficient must be less than upper bound coefficient"
             )
+
+    def _is_valid_coefficient(self, coefficient: float | None) -> bool:
+        """Check if a coefficient is valid (None or positive).
+
+        Args:
+            coefficient: The coefficient to validate
+
+        Returns:
+            True if coefficient is None or positive, False otherwise
+        """
+        return coefficient is None or coefficient > 0
+
+    def _has_valid_coefficient_order(self) -> bool:
+        """Check if coefficients are in valid order (lower < upper).
+
+        Returns:
+            True if coefficients are in valid order or either is None, False otherwise
+        """
+        if self.lower_bound_coefficient is None or self.upper_bound_coefficient is None:
+            return True
+        return self.lower_bound_coefficient < self.upper_bound_coefficient
 
 
 class Benchmark(ABC):
@@ -66,8 +86,10 @@ class HRBenchmark(Benchmark):
 
     def __post_init__(self):
         """Validate HR benchmark data."""
-        if not (100 <= self.max_hr <= 240):
-            raise ValueError("Maximum heart rate must be between 100 and 240 BPM")
+        if not (MIN_HEART_RATE <= self.max_hr <= MAX_HEART_RATE):
+            raise ValueError(
+                f"Maximum heart rate must be between {MIN_HEART_RATE} and {MAX_HEART_RATE} BPM"
+            )
 
     def calculate_zone_bounds(self, zone: Zone) -> tuple[int | None, int | None]:
         """Calculate HR zone bounds.
@@ -100,10 +122,14 @@ class PaceBenchmark(Benchmark):
 
     def __post_init__(self):
         """Validate pace benchmark data."""
-        if not (500 <= self.distance_meters <= 10000):
-            raise ValueError("Distance must be between 500 and 10000 meters")
-        if not (60 <= self.time_seconds <= 3600):
-            raise ValueError("Time must be between 60 and 3600 seconds")
+        if not (MIN_DISTANCE_METERS <= self.distance_meters <= MAX_DISTANCE_METERS):
+            raise ValueError(
+                f"Distance must be between {MIN_DISTANCE_METERS} and {MAX_DISTANCE_METERS} meters"
+            )
+        if not (MIN_TIME_SECONDS <= self.time_seconds <= MAX_TIME_SECONDS):
+            raise ValueError(
+                f"Time must be between {MIN_TIME_SECONDS} and {MAX_TIME_SECONDS} seconds"
+            )
 
     @property
     def base_500m_time(self) -> float:
@@ -137,30 +163,36 @@ class PaceBenchmark(Benchmark):
         return lower_bound, upper_bound
 
 
-def create_benchmark_from_primitives(
-    benchmark_value: int | float | tuple[int, float],
-) -> Benchmark:
-    """Factory function to create benchmark objects from primitive values.
+def create_benchmark(benchmark_type: str, **kwargs) -> Benchmark:
+    """Factory method to create benchmark objects.
 
     Args:
-        benchmark_value: Either maxHR (int) or (distance_meters, time_seconds) tuple
+        benchmark_type: Type of benchmark to create ("hr" or "pace")
+        **kwargs: Parameters specific to the benchmark type
+            - For "hr": max_hr (int)
+            - For "pace": distance_meters (int), time_seconds (float)
 
     Returns:
         Appropriate Benchmark instance
 
     Raises:
-        ValueError: If benchmark_value format is invalid
+        ValueError: If benchmark_type is invalid or required parameters are missing
     """
-    if isinstance(benchmark_value, (int, float)) and not isinstance(
-        benchmark_value, tuple
-    ):
-        return HRBenchmark(max_hr=int(benchmark_value))
-    elif isinstance(benchmark_value, tuple) and len(benchmark_value) == 2:
-        distance_meters, time_seconds = benchmark_value
-        return PaceBenchmark(
-            distance_meters=int(distance_meters), time_seconds=float(time_seconds)
-        )
-    else:
-        raise ValueError(
-            "benchmark_value must be either maxHR (int) or (distance_meters, time_seconds) tuple"
-        )
+    match benchmark_type.lower():
+        case "hr":
+            if "max_hr" not in kwargs:
+                raise ValueError("max_hr parameter required for HR benchmark")
+            return HRBenchmark(max_hr=kwargs["max_hr"])
+        case "pace":
+            if "distance_meters" not in kwargs or "time_seconds" not in kwargs:
+                raise ValueError(
+                    "distance_meters and time_seconds parameters required for pace benchmark"
+                )
+            return PaceBenchmark(
+                distance_meters=kwargs["distance_meters"],
+                time_seconds=kwargs["time_seconds"],
+            )
+        case _:
+            raise ValueError(
+                f"Unknown benchmark type: {benchmark_type}. Must be 'hr' or 'pace'"
+            )
