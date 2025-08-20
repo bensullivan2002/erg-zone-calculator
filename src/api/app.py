@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 import logging
 from pathlib import Path
+from datetime import datetime
 
 
 from .models import (
@@ -56,6 +57,7 @@ async def root():
     static_path = Path(__file__).parent.parent / "static" / "index.html"
     return FileResponse(static_path)
 
+
 @app.get("/api")
 async def api_info():
     """API information endpoint."""
@@ -72,7 +74,7 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "erg-zone-calculator",
-        "timestamp": "2025-01-08T00:00:00Z",  # You could use datetime.utcnow()
+        "timestamp": datetime.utcnow(),  # You could use datetime.utcnow()
     }
 
 
