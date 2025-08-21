@@ -56,14 +56,18 @@ class TestZone:
 
     def test_zone_validation_negative_coefficients(self):
         """Test zone validation with negative coefficients."""
-        with pytest.raises(ValueError, match="Lower bound coefficient must be positive"):
+        with pytest.raises(
+            ValueError, match="Lower bound coefficient must be positive"
+        ):
             Zone(
                 name="Test",
                 lower_bound_coefficient=-0.1,
                 upper_bound_coefficient=0.67,
             )
 
-        with pytest.raises(ValueError, match="Upper bound coefficient must be positive"):
+        with pytest.raises(
+            ValueError, match="Upper bound coefficient must be positive"
+        ):
             Zone(
                 name="Test",
                 lower_bound_coefficient=0.60,
@@ -72,7 +76,10 @@ class TestZone:
 
     def test_zone_validation_coefficient_ordering(self):
         """Test zone validation with incorrect coefficient ordering."""
-        with pytest.raises(ValueError, match="Lower bound coefficient must be less than upper bound coefficient"):
+        with pytest.raises(
+            ValueError,
+            match="Lower bound coefficient must be less than upper bound coefficient",
+        ):
             Zone(
                 name="Test",
                 lower_bound_coefficient=0.80,
@@ -90,12 +97,16 @@ class TestHRBenchmark:
 
     def test_hr_benchmark_validation_too_low(self):
         """Test HR benchmark validation with too low value."""
-        with pytest.raises(ValueError, match="Maximum heart rate must be between 100 and 240 BPM"):
+        with pytest.raises(
+            ValueError, match="Maximum heart rate must be between 100 and 240 BPM"
+        ):
             HRBenchmark(max_hr=90)
 
     def test_hr_benchmark_validation_too_high(self):
         """Test HR benchmark validation with too high value."""
-        with pytest.raises(ValueError, match="Maximum heart rate must be between 100 and 240 BPM"):
+        with pytest.raises(
+            ValueError, match="Maximum heart rate must be between 100 and 240 BPM"
+        ):
             HRBenchmark(max_hr=250)
 
     def test_hr_benchmark_calculate_zone_bounds(self):
@@ -114,7 +125,7 @@ class TestHRBenchmark:
     def test_hr_benchmark_calculate_zone_bounds_with_none(self):
         """Test HR benchmark zone bounds calculation with None coefficients."""
         benchmark = HRBenchmark(max_hr=180)
-        
+
         # Zone with None lower bound
         zone1 = Zone(
             name="UT3",
@@ -147,22 +158,30 @@ class TestPaceBenchmark:
 
     def test_pace_benchmark_validation_distance_too_low(self):
         """Test pace benchmark validation with distance too low."""
-        with pytest.raises(ValueError, match="Distance must be between 500 and 10000 meters"):
+        with pytest.raises(
+            ValueError, match="Distance must be between 500 and 10000 meters"
+        ):
             PaceBenchmark(distance_meters=400, time_seconds=120.0)
 
     def test_pace_benchmark_validation_distance_too_high(self):
         """Test pace benchmark validation with distance too high."""
-        with pytest.raises(ValueError, match="Distance must be between 500 and 10000 meters"):
+        with pytest.raises(
+            ValueError, match="Distance must be between 500 and 10000 meters"
+        ):
             PaceBenchmark(distance_meters=15000, time_seconds=1800.0)
 
     def test_pace_benchmark_validation_time_too_low(self):
         """Test pace benchmark validation with time too low."""
-        with pytest.raises(ValueError, match="Time must be between 60 and 3600 seconds"):
+        with pytest.raises(
+            ValueError, match="Time must be between 60 and 3600 seconds"
+        ):
             PaceBenchmark(distance_meters=2000, time_seconds=30.0)
 
     def test_pace_benchmark_validation_time_too_high(self):
         """Test pace benchmark validation with time too high."""
-        with pytest.raises(ValueError, match="Time must be between 60 and 3600 seconds"):
+        with pytest.raises(
+            ValueError, match="Time must be between 60 and 3600 seconds"
+        ):
             PaceBenchmark(distance_meters=2000, time_seconds=4000.0)
 
     def test_pace_benchmark_base_500m_time(self):
@@ -175,7 +194,9 @@ class TestPaceBenchmark:
 
     def test_pace_benchmark_calculate_zone_bounds(self):
         """Test pace benchmark zone bounds calculation."""
-        benchmark = PaceBenchmark(distance_meters=2000, time_seconds=420.0)  # 105s per 500m
+        benchmark = PaceBenchmark(
+            distance_meters=2000, time_seconds=420.0
+        )  # 105s per 500m
         zone = Zone(
             name="UT2",
             lower_bound_coefficient=0.81,
@@ -188,8 +209,10 @@ class TestPaceBenchmark:
 
     def test_pace_benchmark_calculate_zone_bounds_with_none(self):
         """Test pace benchmark zone bounds calculation with None coefficients."""
-        benchmark = PaceBenchmark(distance_meters=2000, time_seconds=420.0)  # 105s per 500m
-        
+        benchmark = PaceBenchmark(
+            distance_meters=2000, time_seconds=420.0
+        )  # 105s per 500m
+
         # Zone with None lower bound
         zone1 = Zone(
             name="UT3",
@@ -239,8 +262,12 @@ class TestBenchmarkFactory:
 
     def test_create_pace_benchmark_missing_params(self):
         """Test creating pace benchmark with missing parameters."""
-        with pytest.raises(ValueError, match="distance_meters and time_seconds parameters required"):
+        with pytest.raises(
+            ValueError, match="distance_meters and time_seconds parameters required"
+        ):
             create_benchmark("pace", distance_meters=2000)
 
-        with pytest.raises(ValueError, match="distance_meters and time_seconds parameters required"):
+        with pytest.raises(
+            ValueError, match="distance_meters and time_seconds parameters required"
+        ):
             create_benchmark("pace", time_seconds=420.0)

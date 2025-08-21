@@ -6,7 +6,7 @@ Domain constants for validation and business rules.
 MIN_HEART_RATE = 100
 MAX_HEART_RATE = 240
 
-# Pace validation bounds  
+# Pace validation bounds
 MIN_DISTANCE_METERS = 500
 MAX_DISTANCE_METERS = 10000
 MIN_TIME_SECONDS = 60

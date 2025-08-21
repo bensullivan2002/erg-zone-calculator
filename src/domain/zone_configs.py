@@ -41,7 +41,7 @@ class ZoneConfig:
                     upper_bound_coefficient=zone_data["upper_bound"],
                 )
                 self._zones.append(zone_data_obj)
-                
+
                 # Create domain Zone object
                 zone_obj = Zone(
                     name=zone_name,

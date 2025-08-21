@@ -17,7 +17,9 @@ class ZoneFormatter(ABC):
         """
         pass
 
-    def format_zone_bounds(self, lower: int | float | None, upper: int | float | None) -> str:
+    def format_zone_bounds(
+        self, lower: int | float | None, upper: int | float | None
+    ) -> str:
         """Format zone bounds as a range.
 
         Args:
