@@ -23,6 +23,7 @@ from .models import (
 from src.domain.zone_configs import ZoneConfig
 from src.domain.zone_calculators import HRZoneCalculator, PaceZoneCalculator
 from src.domain.zone_formatters import HRFormatter, PaceFormatter
+from src.domain.constants import STATIC_DIR, STATIC_INDEX_FILE
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -47,15 +48,13 @@ app.add_middleware(
 )
 
 # Mount static files
-static_path = Path(__file__).parent.parent / "static"
-app.mount("/static", StaticFiles(directory=static_path), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 @app.get("/")
 async def root():
     """Serve the main landing page."""
-    static_path = Path(__file__).parent.parent / "static" / "index.html"
-    return FileResponse(static_path)
+    return FileResponse(STATIC_INDEX_FILE)
 
 
 @app.get("/api")
