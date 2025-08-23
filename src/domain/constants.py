@@ -1,6 +1,7 @@
 """
 Domain constants for validation and business rules.
 """
+
 from pathlib import Path
 
 # Heart Rate validation bounds
