@@ -7,6 +7,9 @@ __pycache__
 htmlcov
 .coverage
 .ruff_cache
+
+# Agent Files
 CLAUDE.md
 CODE_REVIEW_TODO.md
 code-review-2025-01-19.md
+improvement-suggestions.md

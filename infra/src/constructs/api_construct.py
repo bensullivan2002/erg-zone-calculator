@@ -10,6 +10,8 @@ from aws_cdk import (
 from constructs import Construct
 from pathlib import Path
 
+import src.domain.constants as constants
+
 
 class ApiConstruct(Construct):
     """API Gateway and Lambda function for the FastAPI application."""
@@ -20,7 +22,7 @@ class ApiConstruct(Construct):
         construct_id: str, 
         certificate: acm.Certificate,
         hosted_zone: route53.IHostedZone,
-        domain_name: str = "zonecalculator.com"
+        domain_name: str = constants.ROOT_DOMAIN_NAME
     ) -> None:
         super().__init__(scope, construct_id)
         
@@ -30,7 +32,7 @@ class ApiConstruct(Construct):
         # Lambda function for FastAPI
         self.lambda_function = lambda_.Function(
             self, "ApiFunction",
-            runtime=lambda_.Runtime.PYTHON_3_11,
+            runtime=lambda_.Runtime.PYTHON_3_13,
             handler="lambda_handler.handler",
             code=lambda_.Code.from_asset(
                 str(Path(__file__).parent.parent.parent.parent),  # Root directory
@@ -47,19 +49,19 @@ class ApiConstruct(Construct):
             timeout=Duration.seconds(30),
             memory_size=512,
             environment={
-                "PYTHONPATH": "/var/task/src",
+                "PYTHONPATH": constants.PYTHONPATH,
             }
         )
         
         # HTTP API Gateway
         self.api = apigwv2.HttpApi(
             self, "HttpApi",
-            api_name="erg-zone-calculator-api",
+            api_name=constants.API_NAME,
             description="ERG Zone Calculator API",
             cors_preflight={
-                "allow_origins": [f"https://{domain_name}"],
+                "allow_origins": constants.ALLOW_ORIGINS,
                 "allow_methods": [apigwv2.CorsHttpMethod.GET, apigwv2.CorsHttpMethod.POST],
-                "allow_headers": ["Content-Type", "Authorization"],
+                "allow_headers": constants.ALLOW_HEADERS,
             }
         )
         
