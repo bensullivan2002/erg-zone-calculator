@@ -1,3 +1,4 @@
+from typing_extensions import final
 from aws_cdk import (
     aws_s3 as s3,
     aws_cloudfront as cloudfront,
@@ -13,19 +14,19 @@ from constructs import Construct
 
 class CdnConstruct(Construct):
     """CloudFront distribution and S3 bucket for static content."""
-    
+
     def __init__(
-        self, 
-        scope: Construct, 
+        self,
+        scope: Construct,
         construct_id: str,
         certificate: acm.Certificate,
         hosted_zone: route53.IHostedZone,
         domain_name: str = "zonecalculator.com"
     ) -> None:
         super().__init__(scope, construct_id)
-        
-        self.domain_name = domain_name
-        
+
+        self.domain_name: str = domain_name
+
         # S3 bucket for static assets (reuse existing one)
         self.static_bucket = s3.Bucket(
             self, "StaticSiteAssetsBucket",
@@ -33,13 +34,13 @@ class CdnConstruct(Construct):
             removal_policy=RemovalPolicy.DESTROY,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,  # CloudFront will access via OAC
         )
-        
+
         # Origin Access Control for S3
         oac = cloudfront.OriginAccessControl(
             self, "OAC",
             description="OAC for static site bucket"
         )
-        
+
         # CloudFront distribution
         self.distribution = cloudfront.Distribution(
             self, "Distribution",
@@ -64,10 +65,10 @@ class CdnConstruct(Construct):
                 )
             ]
         )
-        
+
         # Grant CloudFront access to S3 bucket
         self.static_bucket.grant_read(self.distribution.grant_principal)
-        
+
         # Route53 record for main domain
         route53.ARecord(
             self, "SiteAliasRecord",
