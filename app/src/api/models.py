@@ -18,13 +18,13 @@ class HRZoneRequest(BaseModel):
         description="Maximum heart rate in BPM",
     )
     config_path: str = Field(
-        default="config/hr_zones.json", description="Path to HR zone configuration file"
+        default="app/config/hr_zones.json", description="Path to HR zone configuration file"
     )
 
     model_config: ClassVar[ConfigDict] = ConfigDict(
         {
             "json_schema_extra": {
-                "example": {"max_hr": 185, "config_path": "config/hr_zones.json"}
+                "example": {"max_hr": 185, "config_path": "app/config/hr_zones.json"}
             }
         }
     )
@@ -43,7 +43,7 @@ class PaceZoneRequest(BaseModel):
         ..., ge=PaceValidation.MIN_TIME_SECONDS, le=PaceValidation.MAX_TIME_SECONDS, description="Time in seconds"
     )
     config_path: str = Field(
-        default="config/pace_zones.json",
+        default="app/config/pace_zones.json",
         description="Path to pace zone configuration file",
     )
 
@@ -53,7 +53,7 @@ class PaceZoneRequest(BaseModel):
                 "example": {
                     "distance_meters": 2000,
                     "time_seconds": 415.0,
-                    "config_path": "config/pace_zones.json",
+                    "config_path": "app/config/pace_zones.json",
                 }
             }
         }
@@ -148,7 +148,7 @@ class ErrorResponse(BaseModel):
             "json_schema_extra": {
                 "example": {
                     "error": "Configuration file not found",
-                    "detail": "Config file not found at config/hr_zones.json",
+                    "detail": "Config file not found at app/config/hr_zones.json",
                 }
             }
         }

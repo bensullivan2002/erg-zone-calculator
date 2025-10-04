@@ -27,7 +27,7 @@ class TestHRZoneRequest:
         """Test valid HR zone request."""
         request = HRZoneRequest(max_hr=185)
         assert request.max_hr == 185
-        assert request.config_path == "config/hr_zones.json"  # Default value
+        assert request.config_path == "app/config/hr_zones.json"  # Default value
 
     def test_valid_request_with_custom_config(self):
         """Test HR zone request with custom config path."""
@@ -75,8 +75,8 @@ class TestPaceZoneRequest:
         """Test valid pace zone request."""
         request = PaceZoneRequest(distance_meters=2000, time_seconds=420.0)
         assert request.distance_meters == 2000
-        assert request.time_seconds == 420.0
-        assert request.config_path == "config/pace_zones.json"
+        assert request.time_seconds == pytest.approx(420.0)
+        assert request.config_path == "app/config/pace_zones.json"
 
     def test_valid_request_with_custom_config(self):
         """Test pace zone request with custom config."""
@@ -86,7 +86,7 @@ class TestPaceZoneRequest:
             config_path="custom/pace_config.json",
         )
         assert request.distance_meters == 1000
-        assert request.time_seconds == 195.5
+        assert request.time_seconds == pytest.approx(195.5)
         assert request.config_path == "custom/pace_config.json"
 
     def test_distance_validation_too_low(self):
@@ -129,14 +129,14 @@ class TestPaceZoneRequest:
             time_seconds=60.0,  # Min time
         )
         assert request.distance_meters == 500
-        assert request.time_seconds == 60.0
+        assert request.time_seconds == pytest.approx(60.0)
 
         request = PaceZoneRequest(
             distance_meters=10000,  # Max distance
             time_seconds=3600.0,  # Max time
         )
         assert request.distance_meters == 10000
-        assert request.time_seconds == 3600.0
+        assert request.time_seconds == pytest.approx(3600.0)
 
 
 class TestZoneResult:
@@ -172,8 +172,8 @@ class TestZoneResult:
         )
 
         assert result.zone_name == "UT2"
-        assert result.lower_bound == 123.9
-        assert result.upper_bound == 130.2
+        assert result.lower_bound == pytest.approx(123.9)
+        assert result.upper_bound == pytest.approx(130.2)
 
 
 class TestHRZoneResponse:
@@ -228,7 +228,7 @@ class TestPaceZoneResponse:
         )
 
         assert response.distance_meters == 2000
-        assert response.time_seconds == 420.0
+        assert response.time_seconds == pytest.approx(420.0)
         assert response.benchmark_pace == "1:45/500m"
         assert len(response.zones) == 1
 
@@ -240,11 +240,11 @@ class TestErrorResponse:
         """Test error response with detail."""
         error = ErrorResponse(
             error="Configuration file not found",
-            detail="Config file not found at config/hr_zones.json",
+            detail="Config file not found at app/config/hr_zones.json",
         )
 
         assert error.error == "Configuration file not found"
-        assert error.detail == "Config file not found at config/hr_zones.json"
+        assert error.detail == "Config file not found at app/config/hr_zones.json"
 
     def test_error_response_without_detail(self):
         """Test error response without detail."""
